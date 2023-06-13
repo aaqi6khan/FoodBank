@@ -24,7 +24,7 @@ export default function SearchBox(props) {
       <div style={{ display: "flex" }}>
         <div style={{ flex: 1 }}>
           <OutlinedInput
-            style={{ width: "100%", border: "10px inset #ccc", height:"50px", fontFamily: "cursive"}}
+            style={{ width: "100%", border: "5px outset #82B366", height:"50px", fontFamily: "cursive"}}
             value={searchText}
             placeholder="Enter a place"
             onChange={(event) => {

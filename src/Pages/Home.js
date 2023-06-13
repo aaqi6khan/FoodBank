@@ -5,7 +5,6 @@ import IndividualIntervalsExample from "../components/Carousel";
 import SignupModal from "../components/Modal";
 import MapWithSearchBar from "../components/MapWithSearchBar";
 import ImageComponent from "../components/Imagecomponent";
-import VariantButtonGroup from "../components/ButtonGroup";
 function Home() {
   const [modalShow, setModalShow] = React.useState(false);
   return (
@@ -200,7 +199,6 @@ function Home() {
             </h1>
           </div>
         </div>
-        <VariantButtonGroup/>
         <MapWithSearchBar />
       </div>
     </Box>
