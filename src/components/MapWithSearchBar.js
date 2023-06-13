@@ -32,6 +32,6 @@ export default function MapWithSearchBar() {
           setSelectPosition={setSelectPosition}
         />
       </div>
-    </div>
+    </div> 
   );
 }
