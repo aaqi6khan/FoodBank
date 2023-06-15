@@ -61,13 +61,16 @@ function CustomNavbar() {
             </span>
             Share-A-Meal
           </Navbar.Brand>
+          <Button variant="outline-light" style={{fontSize:"30px", borderRadius:"50px" , marginLeft:"auto", marginRight: "10px", boxShadow: "0px 3px 5px rgba(0, 0, 0, 0.5)" }}>Profile</Button>{' '}
           <Button
             variant="light"
             style={{ backgroundColor: "#87CEFA", color: "white" }}
             onClick={handleShow}
           >
             <span className="navbar-toggler-icon"></span>
+            
           </Button>
+          
           <Offcanvas show={show} onHide={handleClose} placement="end">
             <Offcanvas.Header closeButton>
               <Offcanvas.Title
