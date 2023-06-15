@@ -3,6 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { useState } from "react";
 import SignupModal from "./Modal";
 import LoginModal from "./LoginModal";
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import {
   Navbar,
   Container,
@@ -61,7 +62,9 @@ function CustomNavbar() {
             </span>
             Share-A-Meal
           </Navbar.Brand>
-          <Button variant="outline-light" style={{fontSize:"30px", borderRadius:"50px" , marginLeft:"auto", marginRight: "10px", boxShadow: "0px 3px 5px rgba(0, 0, 0, 0.5)" }}>Profile</Button>{' '}
+          
+          <Button  variant="outline-light" style={{fontSize:"23px", borderRadius:"50px" , marginLeft:"auto", marginRight: "10px", boxShadow: "0px 3px 5px rgba(0, 0, 0, 0.5)" }} onClick={() => (window.location.href = '/Profile')}><AccountCircleIcon/> Profile</Button>{' '}
+          
           <Button
             variant="light"
             style={{ backgroundColor: "#87CEFA", color: "white" }}

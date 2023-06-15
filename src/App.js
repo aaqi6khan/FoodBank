@@ -4,6 +4,7 @@ import { Box } from '@mui/material';
 import Footer from './components/Footer';
 import Home from './Pages/Home';
 import CustomNavbar from './components/Navbar';
+import Profile from './Pages/Profile';
 
 const App = () => {
   return (
@@ -12,6 +13,7 @@ const App = () => {
         <CustomNavbar />
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/Profile" element={<Profile />}/>
         </Routes>
         <Footer />
       </Box>
