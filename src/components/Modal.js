@@ -2,22 +2,24 @@ import React, { useState } from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import MapSearch from './MapSearch';
+import GoogleMapReact from "google-map-react";
 
 function SignupModal(props) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [phone, setPhone] = useState("");
-  const [address, setAddress] = useState("");
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
   const [zipCode, setZipcode] = useState("");
   const [volunteerInterest, setVolunteerInterest] = useState("");
   const [availability, setAvailability] = useState([]);
-  const [isRepresentingOrganization, setIsRepresentingOrganization] = useState(false);
+  const [isRepresentingOrganization, setIsRepresentingOrganization] =
+    useState(false);
   const [organizationType, setOrganizationType] = useState("");
   const [organizationHours, setOrganizationHours] = useState("");
+  const [organizationName, setOrganizationName] = useState("");
+  const [address, setAddress] = useState("");
 
   const handleNameChange = (event) => {
     setName(event.target.value);
@@ -33,10 +35,6 @@ function SignupModal(props) {
 
   const handlePhoneChange = (event) => {
     setPhone(event.target.value);
-  };
-
-  const handleAddressChange = (event) => {
-    setAddress(event.target.value);
   };
 
   const handleCityChange = (event) => {
@@ -72,6 +70,22 @@ function SignupModal(props) {
     setOrganizationHours(event.target.value);
   };
 
+  const [marker, setMarker] = useState(null);
+
+  const onMapClick = (event) => {
+    const { lat, lng } = event;
+    setMarker({ lat, lng });
+    setAddress(`${lat}, ${lng}`);
+  };
+
+  const onInputChange = (event) => {
+    setOrganizationName(event.target.value);
+  };
+
+  const center = { lat: 20.5937, lng: 78.9629 }; // India
+
+  const Marker = () => <div className="marker">+</div>;
+
   function validatePhone(phone) {
     const regex = /^\d{10}$/;
     return regex.test(phone);
@@ -94,8 +108,7 @@ function SignupModal(props) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    let errorMessage =
-      "Kindly input valid details for the following fields:\n";
+    let errorMessage = "Kindly input valid details for the following fields:\n";
 
     if (!validateName(name)) {
       errorMessage += "- Name\n";
@@ -113,7 +126,9 @@ function SignupModal(props) {
       errorMessage += "- ZIP Code\n";
     }
 
-    if (errorMessage !== "Kindly input valid details for the following fields:\n") {
+    if (
+      errorMessage !== "Kindly input valid details for the following fields:\n"
+    ) {
       alert(errorMessage);
       return;
     }
@@ -122,7 +137,6 @@ function SignupModal(props) {
     console.log("Password:", password);
     console.log("Name:", name);
     console.log("Phone number:", phone);
-    console.log("Address:", address);
     console.log("City:", city);
     console.log("State:", state);
     console.log("Zip code:", zipCode);
@@ -135,6 +149,8 @@ function SignupModal(props) {
     if (isRepresentingOrganization) {
       console.log("Type of organization:", organizationType);
       console.log("Hours of operation:", organizationHours);
+      console.log("Organization Name:", organizationName); // Add this line
+      console.log("Address:", address); // Add this line
     }
   };
 
@@ -190,17 +206,6 @@ function SignupModal(props) {
               placeholder="Phone number"
               value={phone}
               onChange={handlePhoneChange}
-              required
-            />
-          </Form.Group>
-
-          <Form.Group controlId="formBasicAddress">
-            <Form.Label>Address</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Address"
-              value={address}
-              onChange={handleAddressChange}
               required
             />
           </Form.Group>
@@ -357,33 +362,52 @@ function SignupModal(props) {
                   value={organizationType}
                   onChange={handleOrganizationTypeChange}
                 >
-                  <option>Food bank</option>
+                  <option>FoodBank/NGO</option>
                   <option>Grocery store</option>
                   <option>Restaurant</option>
                 </Form.Control>
               </Form.Group>
 
               <Form.Group controlId="formBasicOrganizationHours">
-                <Form.Label>Hours of operation</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Organization hours"
-                  value={organizationHours}
-                  onChange={handleOrganizationHoursChange}
-                />
-              </Form.Group>
+  <Form.Label>Hours of operation</Form.Label>
+  <Form.Control
+    type="text"
+    placeholder="Organization hours"
+    value={organizationHours}
+    onChange={handleOrganizationHoursChange}
+  />
+</Form.Group>
 
-              <Form.Group
-                style={{
-                  position: "relative",
-                  margin: "0 auto",
-                  marginTop: "10px",
-                  width: "60%",
-                  marginRight: "310px"
-                }}
-              >
-                <MapSearch />
-              </Form.Group>
+<Form.Group>
+  <div
+    style={{
+      height: "350px",
+      width: "760px",
+      marginBottom: "20px",
+    }}
+  >
+    <label>
+      Organization Name:
+      <input type="text" onChange={onInputChange} />
+    </label>
+    <label>
+      Address:
+      <input type="text" value={address} readOnly />
+    </label>
+    <GoogleMapReact
+      bootstrapURLKeys={{
+        key: "AIzaSyBFBFcLIDFEoIX2utTyxDnPMbNE4ukqbv0&libraries=places",
+        libraries: "places",
+      }}
+      defaultCenter={center}
+      defaultZoom={5}
+      onClick={onMapClick}
+    >
+      {marker && <Marker lat={marker.lat} lng={marker.lng} />}
+    </GoogleMapReact>
+  </div>
+</Form.Group>
+
             </>
           )}
 
@@ -393,7 +417,7 @@ function SignupModal(props) {
             style={{
               backgroundColor: "#990000",
               color: "white",
-              marginTop: "20px"
+              marginTop: "20px",
             }}
           >
             Submit
