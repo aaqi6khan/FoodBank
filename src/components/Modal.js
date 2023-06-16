@@ -14,7 +14,7 @@ function SignupModal(props) {
   const [state, setState] = useState("");
   const [zipCode, setZipcode] = useState("");
   const [volunteerInterest, setVolunteerInterest] = useState("");
-  const [availability, setAvailability] = useState("");
+  const [availability, setAvailability] = useState([]);
   const [isRepresentingOrganization, setIsRepresentingOrganization] = useState(false);
   const [organizationType, setOrganizationType] = useState("");
   const [organizationHours, setOrganizationHours] = useState("");
@@ -56,7 +56,12 @@ function SignupModal(props) {
   };
 
   const handleAvailabilityChange = (event) => {
-    setAvailability(event.target.value);
+    const value = event.target.value;
+    if (availability.includes(value)) {
+      setAvailability(availability.filter((item) => item !== value));
+    } else {
+      setAvailability([...availability, value]);
+    }
   };
 
   const handleOrganizationTypeChange = (event) => {
@@ -347,7 +352,11 @@ function SignupModal(props) {
             <>
               <Form.Group controlId="formBasicOrganizationType">
                 <Form.Label>Type of organization</Form.Label>
-                <Form.Control as="select">
+                <Form.Control
+                  as="select"
+                  value={organizationType}
+                  onChange={handleOrganizationTypeChange}
+                >
                   <option>Food bank</option>
                   <option>Grocery store</option>
                   <option>Restaurant</option>
@@ -359,6 +368,8 @@ function SignupModal(props) {
                 <Form.Control
                   type="text"
                   placeholder="Organization hours"
+                  value={organizationHours}
+                  onChange={handleOrganizationHoursChange}
                 />
               </Form.Group>
 
@@ -382,11 +393,10 @@ function SignupModal(props) {
             style={{
               backgroundColor: "#990000",
               color: "white",
-              marginTop: "15px",
-              marginLeft: "680px"
+              marginTop: "20px"
             }}
           >
-            Sign Up
+            Submit
           </Button>
         </Form>
       </Modal.Body>
