@@ -24,7 +24,7 @@ export default function VariantButtonGroup(props) {
           sx={{ fontSize: '20px' }}
           onClick={() => setSelectedCategory('foodbank')}
         >
-          Foodbanks
+          FoodBank / NGO's
         </Button>
         <Button
           color="success"

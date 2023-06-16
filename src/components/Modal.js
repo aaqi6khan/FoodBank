@@ -16,7 +16,8 @@ function SignupModal(props) {
   const [volunteerInterest, setVolunteerInterest] = useState("");
   const [availability, setAvailability] = useState("");
   const [isRepresentingOrganization, setIsRepresentingOrganization] = useState(false);
-
+  const [organizationType, setOrganizationType] = useState("");
+  const [organizationHours, setOrganizationHours] = useState("");
 
   const handleNameChange = (event) => {
     setName(event.target.value);
@@ -58,6 +59,14 @@ function SignupModal(props) {
     setAvailability(event.target.value);
   };
 
+  const handleOrganizationTypeChange = (event) => {
+    setOrganizationType(event.target.value);
+  };
+
+  const handleOrganizationHoursChange = (event) => {
+    setOrganizationHours(event.target.value);
+  };
+
   function validatePhone(phone) {
     const regex = /^\d{10}$/;
     return regex.test(phone);
@@ -81,28 +90,29 @@ function SignupModal(props) {
   const handleSubmit = (event) => {
     event.preventDefault();
     let errorMessage =
-      " Kindly input valid details for the following fields: \n";
+      "Kindly input valid details for the following fields:\n";
 
     if (!validateName(name)) {
-      errorMessage += " Name\n";
+      errorMessage += "- Name\n";
     }
 
     if (!validateEmail(email)) {
-      errorMessage += " Email\n";
+      errorMessage += "- Email\n";
     }
 
     if (!validatePhone(phone)) {
-      errorMessage += " PhoneNumber\n";
+      errorMessage += "- Phone Number\n";
     }
 
     if (!validateZipCode(zipCode)) {
-      errorMessage += " PIN\n";
+      errorMessage += "- ZIP Code\n";
     }
 
-    if (errorMessage !== " Kindly input valid details for the following fields: \n") {
+    if (errorMessage !== "Kindly input valid details for the following fields:\n") {
       alert(errorMessage);
       return;
     }
+
     console.log("Email:", email);
     console.log("Password:", password);
     console.log("Name:", name);
@@ -112,18 +122,17 @@ function SignupModal(props) {
     console.log("State:", state);
     console.log("Zip code:", zipCode);
     console.log("Interested in volunteering:", volunteerInterest);
+
     if (volunteerInterest === "Yes") {
       console.log("Availability:", availability);
     }
-    if (isRepresentingOrganization) {
-        const organizationType = document.getElementById('formBasicOrganizationType').value;
-        const organizationHours = document.getElementById('formBasicOrganizationHours').value;
-      
-        console.log("Type of organization:", organizationType);
-        console.log("Hours of operation:", organizationHours);
-      }
 
+    if (isRepresentingOrganization) {
+      console.log("Type of organization:", organizationType);
+      console.log("Hours of operation:", organizationHours);
+    }
   };
+
   return (
     <Modal
       {...props}
@@ -143,6 +152,7 @@ function SignupModal(props) {
               placeholder="Name"
               value={name}
               onChange={handleNameChange}
+              required
             />
           </Form.Group>
 
@@ -153,6 +163,7 @@ function SignupModal(props) {
               placeholder="Enter email"
               value={email}
               onChange={handleEmailChange}
+              required
             />
           </Form.Group>
 
@@ -163,6 +174,7 @@ function SignupModal(props) {
               placeholder="Password"
               value={password}
               onChange={handlePasswordChange}
+              required
             />
           </Form.Group>
 
@@ -171,39 +183,9 @@ function SignupModal(props) {
             <Form.Control
               type="tel"
               placeholder="Phone number"
-              id="phone"
               value={phone}
               onChange={handlePhoneChange}
-            />
-          </Form.Group>
-
-          <Form.Group controlId="formBasicState">
-            <Form.Label>State</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="State"
-              value={state}
-              onChange={handleStateChange}
-            />
-          </Form.Group>
-
-          <Form.Group controlId="formBasicCity">
-            <Form.Label>City</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="City"
-              value={city}
-              onChange={handleCityChange}
-            />
-          </Form.Group>
-
-          <Form.Group controlId="formBasicZipcode">
-            <Form.Label>Zip code</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Zip code"
-              value={zipCode}
-              onChange={handleZipcodeChange}
+              required
             />
           </Form.Group>
 
@@ -214,153 +196,194 @@ function SignupModal(props) {
               placeholder="Address"
               value={address}
               onChange={handleAddressChange}
+              required
             />
           </Form.Group>
+
+          <Form.Group controlId="formBasicCity">
+            <Form.Label>City</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="City"
+              value={city}
+              onChange={handleCityChange}
+              required
+            />
+          </Form.Group>
+
+          <Form.Group controlId="formBasicState">
+            <Form.Label>State</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="State"
+              value={state}
+              onChange={handleStateChange}
+              required
+            />
+          </Form.Group>
+
+          <Form.Group controlId="formBasicZipcode">
+            <Form.Label>Zip code</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Zip code"
+              value={zipCode}
+              onChange={handleZipcodeChange}
+              required
+            />
+          </Form.Group>
+
           <Form.Group controlId="formBasicVolunteerInterest">
             <Form.Label>Are you interested in volunteering?</Form.Label>
-            <div key={"inline-radio"} className="mb-3">
+            <div key="inline-radio" className="mb-3">
               <Form.Check
                 inline
                 label="Yes"
                 name="volunteerInterest"
-                type={"radio"}
-                id={`inline-radio-1`}
-                value={"Yes"}
+                type="radio"
+                id="inline-radio-1"
+                value="Yes"
                 onChange={handleVolunteerInterestChange}
               />
               <Form.Check
                 inline
                 label="No"
                 name="volunteerInterest"
-                type={"radio"}
-                id={`inline-radio-2`}
-                value={"No"}
+                type="radio"
+                id="inline-radio-2"
+                value="No"
                 onChange={handleVolunteerInterestChange}
               />
             </div>
           </Form.Group>
 
           {volunteerInterest === "Yes" && (
-  <Form.Group controlId="formBasicAvailability">
-    <Form.Label>Availability</Form.Label>
-    <div className="mb-3">
-      <Form.Check
-        label="Monday"
-        name="availability"
-        type="checkbox"
-        id="inline-checkbox-1"
-        value="Monday"
-        onChange={handleAvailabilityChange}
-      />
-      <Form.Check
-        label="Tuesday"
-        name="availability"
-        type="checkbox"
-        id="inline-checkbox-2"
-        value="Tuesday"
-        onChange={handleAvailabilityChange}
-      />
-      <Form.Check
-        label="Wednesday"
-        name="availability"
-        type="checkbox"
-        id="inline-checkbox-3"
-        value="Wednesday"
-        onChange={handleAvailabilityChange}
-      />
-      <Form.Check
-        label="Thursday"
-        name="availability"
-        type="checkbox"
-        id="inline-checkbox-4"
-        value="Thursday"
-        onChange={handleAvailabilityChange}
-      />
-      <Form.Check
-        label="Friday"
-        name="availability"
-        type="checkbox"
-        id="inline-checkbox-5"
-        value="Friday"
-        onChange={handleAvailabilityChange}
-      />
-      <Form.Check
-        label="Saturday"
-        name="availability"
-        type="checkbox"
-        id="inline-checkbox-6"
-        value="Saturday"
-        onChange={handleAvailabilityChange}
-      />
-      <Form.Check
-        label="Sunday"
-        name="availability"
-        type="checkbox"
-        id="inline-checkbox-7"
-        value="Sunday"
-        onChange={handleAvailabilityChange}
-      />
-    </div>
-  </Form.Group>
-)}
+            <Form.Group controlId="formBasicAvailability">
+              <Form.Label>Availability</Form.Label>
+              <div className="mb-3">
+                <Form.Check
+                  label="Monday"
+                  name="availability"
+                  type="checkbox"
+                  id="inline-checkbox-1"
+                  value="Monday"
+                  onChange={handleAvailabilityChange}
+                />
+                <Form.Check
+                  label="Tuesday"
+                  name="availability"
+                  type="checkbox"
+                  id="inline-checkbox-2"
+                  value="Tuesday"
+                  onChange={handleAvailabilityChange}
+                />
+                <Form.Check
+                  label="Wednesday"
+                  name="availability"
+                  type="checkbox"
+                  id="inline-checkbox-3"
+                  value="Wednesday"
+                  onChange={handleAvailabilityChange}
+                />
+                <Form.Check
+                  label="Thursday"
+                  name="availability"
+                  type="checkbox"
+                  id="inline-checkbox-4"
+                  value="Thursday"
+                  onChange={handleAvailabilityChange}
+                />
+                <Form.Check
+                  label="Friday"
+                  name="availability"
+                  type="checkbox"
+                  id="inline-checkbox-5"
+                  value="Friday"
+                  onChange={handleAvailabilityChange}
+                />
+                <Form.Check
+                  label="Saturday"
+                  name="availability"
+                  type="checkbox"
+                  id="inline-checkbox-6"
+                  value="Saturday"
+                  onChange={handleAvailabilityChange}
+                />
+                <Form.Check
+                  label="Sunday"
+                  name="availability"
+                  type="checkbox"
+                  id="inline-checkbox-7"
+                  value="Sunday"
+                  onChange={handleAvailabilityChange}
+                />
+              </div>
+            </Form.Group>
+          )}
 
-<Form.Group controlId="formBasicOrganization">
-  <Form.Label>Are you representing an organization?</Form.Label>
-  <div key="inline-radio">
-    <Form.Check
-      inline
-      label="Yes"
-      type="radio"
-      id="inline-radio-yes"
-      checked={isRepresentingOrganization}
-      onChange={() => setIsRepresentingOrganization(true)}
-    />
-    <Form.Check
-      inline
-      label="No"
-      type="radio"
-      id="inline-radio-no"
-      checked={!isRepresentingOrganization}
-      onChange={() => setIsRepresentingOrganization(false)}
-    />
-  </div>
-</Form.Group>
+          <Form.Group controlId="formBasicOrganization">
+            <Form.Label>Are you representing an organization?</Form.Label>
+            <div key="inline-radio">
+              <Form.Check
+                inline
+                label="Yes"
+                type="radio"
+                id="inline-radio-yes"
+                checked={isRepresentingOrganization}
+                onChange={() => setIsRepresentingOrganization(true)}
+              />
+              <Form.Check
+                inline
+                label="No"
+                type="radio"
+                id="inline-radio-no"
+                checked={!isRepresentingOrganization}
+                onChange={() => setIsRepresentingOrganization(false)}
+              />
+            </div>
+          </Form.Group>
 
-{isRepresentingOrganization && (
-  <>
-    <Form.Group controlId="formBasicOrganizationType">
-      <Form.Label>Type of organization</Form.Label>
-      <Form.Control as="select">
-        <option>Food bank</option>
-        <option>Grocery store</option>
-        <option>Restaurant</option>
-      </Form.Control>
-    </Form.Group>
-    
-    <Form.Group controlId="formBasicOrganizationHours">
-      <Form.Label>Hours of operation</Form.Label>
-      <Form.Control type="text" placeholder="Organization hours" />
-    </Form.Group>
+          {isRepresentingOrganization && (
+            <>
+              <Form.Group controlId="formBasicOrganizationType">
+                <Form.Label>Type of organization</Form.Label>
+                <Form.Control as="select">
+                  <option>Food bank</option>
+                  <option>Grocery store</option>
+                  <option>Restaurant</option>
+                </Form.Control>
+              </Form.Group>
 
-    <Form.Group style={{ 
-    position: 'relative',
-    margin: '0 auto',
-    marginTop:'10px',
-    width: '60%',
-    marginRight: '310px'
-  }}>
-    <MapSearch />
-</Form.Group>
-  </>
-)}
+              <Form.Group controlId="formBasicOrganizationHours">
+                <Form.Label>Hours of operation</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Organization hours"
+                />
+              </Form.Group>
+
+              <Form.Group
+                style={{
+                  position: "relative",
+                  margin: "0 auto",
+                  marginTop: "10px",
+                  width: "60%",
+                  marginRight: "310px"
+                }}
+              >
+                <MapSearch />
+              </Form.Group>
+            </>
+          )}
+
           <Button
             variant="primary"
-            onClick={handleSubmit}
+            type="submit"
             style={{
               backgroundColor: "#990000",
               color: "white",
               marginTop: "15px",
-              marginLeft: '680px'
+              marginLeft: "680px"
             }}
           >
             Sign Up
