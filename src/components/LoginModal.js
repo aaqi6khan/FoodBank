@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
+import firebase from "firebase/compat/app";
+import "firebase/compat/auth";
 
 function LoginModal(props) {
   const [email, setEmail] = useState("");
@@ -15,10 +17,18 @@ function LoginModal(props) {
     setPassword(event.target.value);
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
+
+    try {
+      await firebase.auth().signInWithEmailAndPassword(email, password);
+    } catch (error) {
+      console.log("Error signing in:", error);
+      alert("Error signing in:\n" + error);
+    }
     console.log("Email:", email);
     console.log("Password:", password);
+    props.onHide();
   };
 
   return (
@@ -53,9 +63,16 @@ function LoginModal(props) {
             />
           </Form.Group>
 
-          <Button variant="primary" type="submit" style={{marginTop:"10px", backgroundColor: "#990000",
-              color: "white"}}>
-            Submit
+          <Button
+            variant="primary"
+            type="submit"
+            style={{
+              marginTop: "10px",
+              backgroundColor: "#990000",
+              color: "white",
+            }}
+          >
+            Login
           </Button>
         </Form>
       </Modal.Body>

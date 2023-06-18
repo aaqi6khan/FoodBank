@@ -1,13 +1,15 @@
 import React, { useState } from "react";
-import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
+import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import GoogleMapReact from "google-map-react";
+import firebase from "firebase/compat/app";
+import { database } from "../firebase";
 
 function SignupModal(props) {
-  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
@@ -21,16 +23,16 @@ function SignupModal(props) {
   const [organizationName, setOrganizationName] = useState("");
   const [address, setAddress] = useState("");
 
-  const handleNameChange = (event) => {
-    setName(event.target.value);
-  };
-
   const handleEmailChange = (event) => {
     setEmail(event.target.value);
   };
 
   const handlePasswordChange = (event) => {
     setPassword(event.target.value);
+  };
+
+  const handleNameChange = (event) => {
+    setName(event.target.value);
   };
 
   const handlePhoneChange = (event) => {
@@ -106,7 +108,7 @@ function SignupModal(props) {
     return regex.test(name);
   }
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     let errorMessage = "Kindly input valid details for the following fields:\n";
 
@@ -133,25 +135,93 @@ function SignupModal(props) {
       return;
     }
 
-    console.log("Email:", email);
-    console.log("Password:", password);
-    console.log("Name:", name);
-    console.log("Phone number:", phone);
-    console.log("City:", city);
-    console.log("State:", state);
-    console.log("Zip code:", zipCode);
-    console.log("Interested in volunteering:", volunteerInterest);
+    try {
+      // Create a new user in Firebase Authentication
+      const authUser = await firebase
+        .auth()
+        .createUserWithEmailAndPassword(email, password);
 
-    if (volunteerInterest === "Yes") {
-      console.log("Availability:", availability);
-    }
+      // Create a new user object with the form data
+      const user = {
+        name,
+        email: authUser.user.email,
+        phone,
+        city,
+        state,
+        zipCode,
+        volunteerInterest,
+        availability: volunteerInterest === "Yes" ? availability : null,
+        isRepresentingOrganization,
+        organizationType: isRepresentingOrganization ? organizationType : null,
+        organizationHours: isRepresentingOrganization
+          ? organizationHours
+          : null,
+        organizationName: isRepresentingOrganization ? organizationName : null,
+        organizationAddress: isRepresentingOrganization ? address : null,
+      };
 
-    if (isRepresentingOrganization) {
-      console.log("Type of organization:", organizationType);
-      console.log("Hours of operation:", organizationHours);
-      console.log("Organization Name:", organizationName); // Add this line
-      console.log("Address:", address); // Add this line
+      // Push the user object to the Firebase database
+      database.ref("users").push(user);
+
+      //seperating data based on the type of organization
+      let collectionName = "";
+      if (isRepresentingOrganization) {
+        switch (organizationType) {
+          case "Grocery store":
+            collectionName = "groceries";
+            break;
+          case "Restaurant":
+            collectionName = "restaurants";
+            break;
+          default:
+            collectionName = "foodbanks";
+        }
+      }
+      const org = {
+        name,
+        email: authUser.user.email,
+        phone,
+        city,
+        state,
+        zipCode,
+        volunteerInterest,
+        availability: volunteerInterest === "Yes" ? availability : null,
+        isRepresentingOrganization,
+        organizationType: isRepresentingOrganization ? organizationType : null,
+        organizationHours: isRepresentingOrganization
+          ? organizationHours
+          : null,
+        organizationName: isRepresentingOrganization ? organizationName : null,
+        organizationAddress: isRepresentingOrganization ? address : null,
+      };
+
+      // Push the user object to the appropriate collection in the Firestore database
+      database.ref(collectionName).push(org);
+
+      setEmail("");
+      setPassword("");
+      setName("");
+      setPhone("");
+      setCity("");
+      setState("");
+      setZipcode("");
+      setVolunteerInterest("");
+      setAvailability([]);
+      setIsRepresentingOrganization(false);
+      setOrganizationType("");
+      setOrganizationHours("");
+      setOrganizationName("");
+      setAddress("");
+    } catch (error) {
+      console.log("Error creating user:", error);
+      alert(
+        "It seems like this email is already registered. Please use a different email or try logging in."
+      );
+      // Handle error, display an error message, etc.
     }
+    alert("Your account has been successfully created.");
+    props.onHide();
+    // Close the modal
   };
 
   return (
@@ -369,45 +439,44 @@ function SignupModal(props) {
               </Form.Group>
 
               <Form.Group controlId="formBasicOrganizationHours">
-  <Form.Label>Hours of operation</Form.Label>
-  <Form.Control
-    type="text"
-    placeholder="Organization hours"
-    value={organizationHours}
-    onChange={handleOrganizationHoursChange}
-  />
-</Form.Group>
+                <Form.Label>Hours of operation</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Organization hours"
+                  value={organizationHours}
+                  onChange={handleOrganizationHoursChange}
+                />
+              </Form.Group>
 
-<Form.Group>
-  <div
-    style={{
-      height: "350px",
-      width: "760px",
-      marginBottom: "20px",
-    }}
-  >
-    <label>
-      Organization Name:
-      <input type="text" onChange={onInputChange} />
-    </label>
-    <label>
-      Address:
-      <input type="text" value={address} readOnly />
-    </label>
-    <GoogleMapReact
-      bootstrapURLKeys={{
-        key: "AIzaSyBFBFcLIDFEoIX2utTyxDnPMbNE4ukqbv0&libraries=places",
-        libraries: "places",
-      }}
-      defaultCenter={center}
-      defaultZoom={5}
-      onClick={onMapClick}
-    >
-      {marker && <Marker lat={marker.lat} lng={marker.lng} />}
-    </GoogleMapReact>
-  </div>
-</Form.Group>
-
+              <Form.Group>
+                <div
+                  style={{
+                    height: "350px",
+                    width: "760px",
+                    marginBottom: "20px",
+                  }}
+                >
+                  <label>
+                    Organization Name:
+                    <input type="text" onChange={onInputChange} />
+                  </label>
+                  <label>
+                    Address:
+                    <input type="text" value={address} readOnly />
+                  </label>
+                  <GoogleMapReact
+                    bootstrapURLKeys={{
+                      key: "AIzaSyBFBFcLIDFEoIX2utTyxDnPMbNE4ukqbv0&libraries=places",
+                      libraries: "places",
+                    }}
+                    defaultCenter={center}
+                    defaultZoom={5}
+                    onClick={onMapClick}
+                  >
+                    {marker && <Marker lat={marker.lat} lng={marker.lng} />}
+                  </GoogleMapReact>
+                </div>
+              </Form.Group>
             </>
           )}
 
