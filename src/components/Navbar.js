@@ -14,7 +14,6 @@ import {
   Form,
   FormControl,
 } from "react-bootstrap";
-
 function CustomNavbar() {
   const [show, setShow] = useState(false);
   const handleShow = () => setShow(true);

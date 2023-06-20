@@ -5,7 +5,7 @@ import Form from "react-bootstrap/Form";
 import GoogleMapReact from "google-map-react";
 import firebase from "firebase/compat/app";
 import { database } from "../firebase";
-
+ 
 function SignupModal(props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -167,6 +167,9 @@ function SignupModal(props) {
       let collectionName = "";
       if (isRepresentingOrganization) {
         switch (organizationType) {
+          case "FoodBank/NGO":
+            collectionName = "foodbanks";
+            break;
           case "Grocery store":
             collectionName = "groceries";
             break;
@@ -432,6 +435,7 @@ function SignupModal(props) {
                   value={organizationType}
                   onChange={handleOrganizationTypeChange}
                 >
+                  <option value="">Select organization type</option>
                   <option>FoodBank/NGO</option>
                   <option>Grocery store</option>
                   <option>Restaurant</option>

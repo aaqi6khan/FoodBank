@@ -15,7 +15,7 @@ const App = () => {
           <Route path="/" element={<Home />} />
           <Route path="/Profile" element={<Profile />}/>
         </Routes>
-        <Footer />
+        <Footer style={{ marginTop: 'auto' }}/>
       </Box>
     </Router>
   );
