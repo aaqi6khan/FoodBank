@@ -111,8 +111,7 @@ export default function Maps(props) {
           >
             <Popup>
               <div>
-                <h3>Food Bank</h3>
-                <p>Coordinates: {foodbank.organizationAddress}</p>
+                <h3>{foodbank.organizationName}</h3>
                 <p>Phone: {foodbank.phone}</p>
                 <p>Email: {foodbank.email}</p>
               </div>
@@ -128,8 +127,7 @@ export default function Maps(props) {
           >
             <Popup>
               <div>
-                <h3>Grocery Store</h3>
-                <p>Coordinates: {grocery.organizationAddress}</p>
+                <h3>{grocery.organizationName}</h3>
                 <p>Phone: {grocery.phone}</p>
                 <p>Email: {grocery.email}</p>
               </div>
@@ -145,8 +143,7 @@ export default function Maps(props) {
           >
             <Popup>
               <div>
-                <h3>Restaurant</h3>
-                <p>Coordinates: {restaurant.organizationAddress}</p>
+                <h3>{restaurant.organizationName}</h3>
                 <p>Phone: {restaurant.phone}</p>
                 <p>Email: {restaurant.email}</p>
               </div>
