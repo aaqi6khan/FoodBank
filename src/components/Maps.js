@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
-import { restaurantCoords, foodbankCoords, groceryCoords } from './coordinates';
+import firebase from "firebase/compat/app";
+import "firebase/database";
 import ButtonGroup from './ButtonGroup'; // Assuming ButtonGroup component is in a separate file
 
 const restaurantIcon = L.icon({
@@ -44,78 +45,117 @@ function ResetCenterView(props) {
 export default function Maps(props) {
   const { selectPosition } = props;
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    // Fetch data from Firebase Realtime Database
+    const database = firebase.database();
+    const foodbanksRef = database.ref("foodbanks");
+    const groceriesRef = database.ref("groceries");
+    const restaurantsRef = database.ref("restaurants");
+
+    // Attach listeners to the database references
+    foodbanksRef.on("value", (snapshot) => {
+      const foodbanksData = snapshot.val();
+      // Process the data and update state
+      setData((prevData) => ({
+        ...prevData,
+        foodbanks: foodbanksData,
+      }));
+    });
+
+    groceriesRef.on("value", (snapshot) => {
+      const groceriesData = snapshot.val();
+      // Process the data and update state
+      setData((prevData) => ({
+        ...prevData,
+        groceries: groceriesData,
+      }));
+    });
+
+    restaurantsRef.on("value", (snapshot) => {
+      const restaurantsData = snapshot.val();
+      // Process the data and update state
+      setData((prevData) => ({
+        ...prevData,
+        restaurants: restaurantsData,
+      }));
+    });
+
+    // Cleanup function to remove the listeners
+    return () => {
+      foodbanksRef.off();
+      groceriesRef.off();
+      restaurantsRef.off();
+    };
+  }, []);
 
   return (
     <>
-    <ButtonGroup
-        setSelectedCategory={setSelectedCategory}
-      />
-    <MapContainer
-      center={position}
-      zoom={6}
-      style={{ width: "1400px", height: "400px", border: "0px outset #82B366" }}
-    >
-      <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        url="https://api.maptiler.com/maps/basic/256/{z}/{x}/{y}.png?key=gakmZ6je8Ta7N0dR0RnD"
-      />
+      <ButtonGroup setSelectedCategory={setSelectedCategory} />
+      <MapContainer
+        center={position}
+        zoom={6}
+        style={{ width: "1400px", height: "400px", border: "0px outset #82B366" }}
+      >
+        <TileLayer
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          url="https://api.maptiler.com/maps/basic/256/{z}/{x}/{y}.png?key=gakmZ6je8Ta7N0dR0RnD"
+        />
       
-      {foodbankCoords.map(coord => (
-        selectedCategory === 'foodbank' && (
+        {selectedCategory === 'foodbank' && data?.foodbanks && Object.values(data.foodbanks).map((foodbank) => (
           <Marker
-            position={coord.coordinates}
+            position={foodbank.organizationAddress.split(", ")}
             icon={foodbankIcon}
-            key={`foodbank-${coord.coordinates[0]}-${coord.coordinates[1]}`}
+            key={foodbank.organizationName}
           >
             <Popup>
               <div>
                 <h3>Food Bank</h3>
-                <p>Coordinates: {coord.coordinates[0]}, {coord.coordinates[1]}</p>
-                <p>Phone: {coord.contact.phone}</p>
-                <p>Email: {coord.contact.email}</p>
+                <p>Coordinates: {foodbank.organizationAddress}</p>
+                <p>Phone: {foodbank.phone}</p>
+                <p>Email: {foodbank.email}</p>
               </div>
             </Popup>
           </Marker>
-        )
-      ))}
-      {groceryCoords.map(coord => (
-        selectedCategory === 'grocery' && (
+        ))}
+        
+        {selectedCategory === 'grocery' && data?.groceries && Object.values(data.groceries).map((grocery) => (
           <Marker
-            position={coord.coordinates}
+            position={grocery.organizationAddress.split(", ")}
             icon={groceryIcon}
-            key={`grocery-${coord.coordinates[0]}-${coord.coordinates[1]}`}
+            key={grocery.organizationName}
           >
             <Popup>
               <div>
                 <h3>Grocery Store</h3>
-                <p>Coordinates: {coord.coordinates[0]}, {coord.coordinates[1]}</p>
-                <p>Phone: {coord.contact.phone}</p>
-                <p>Email: {coord.contact.email}</p>
+                <p>Coordinates: {grocery.organizationAddress}</p>
+                <p>Phone: {grocery.phone}</p>
+                <p>Email: {grocery.email}</p>
               </div>
             </Popup>
           </Marker>
-        )
-      ))}
-      {restaurantCoords.map(coord => (
-        selectedCategory === 'restaurant' && (
+        ))}
+        
+        {selectedCategory === 'restaurant' && data?.restaurants && Object.values(data.restaurants).map((restaurant) => (
           <Marker
-            position={coord.coordinates}
+            position={restaurant.organizationAddress.split(", ")}
             icon={restaurantIcon}
-            key={`restaurant-${coord.coordinates[0]}-${coord.coordinates[1]}`}
+            key={restaurant.organizationName}
           >
             <Popup>
               <div>
                 <h3>Restaurant</h3>
-                <p>Coordinates: {coord.coordinates[0]}, {coord.coordinates[1]}</p>
-                <p>Phone: {coord.contact.phone}</p>
-                <p>Email: {coord.contact.email}</p>
+                <p>Coordinates: {restaurant.organizationAddress}</p>
+                <p>Phone: {restaurant.phone}</p>
+                <p>Email: {restaurant.email}</p>
               </div>
             </Popup>
           </Marker>
-        )
-      ))}
-      <ResetCenterView selectPosition={selectPosition} />
-    </MapContainer>
+        ))}
+        
+        <ResetCenterView selectPosition={selectPosition} />
+      </MapContainer>
     </>
   );
 }
