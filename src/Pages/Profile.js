@@ -14,6 +14,7 @@ import {
 } from "mdb-react-ui-kit";
 import Button from "@mui/material/Button";
 import LoginModal from "../components/LoginModal";
+import SignupModal from "../components/Modal";
 import Link from '@mui/material/Link';
 
 const Profile = () => {
@@ -21,6 +22,7 @@ const Profile = () => {
   const [userDataUID, setUserDataUID] = useState("");
   const [userDetails, setUserDetails] = useState(null);
   const [loginShow, setLoginShow] = React.useState(false);
+  const [SignupShow, setSignupShow] = React.useState(false);
   useEffect(() => {
     const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
       if (user) {
@@ -280,10 +282,10 @@ const Profile = () => {
         </div>
       ) : (
         <>
-        <LoginModal/>
-        <h1 class="display-1" style={{textAlign:"center"}}>To view your profile, please <Link underline="none" href="#" onClick={() => setLoginShow(true)}>Login</Link>. <ReportProblemIcon style={{ fontSize: '30vh' }}/></h1>
+        <p class="display-1" style={{textAlign:"center"}}>To view your profile, please <Link underline="none" href="#" onClick={() => setLoginShow(true)}>Login</Link>. <ReportProblemIcon style={{ fontSize: '10vh' }}/><br /> <h8 class="display-6" >New to our platform? <Link underline="none" href="#" onClick={() => setSignupShow(true)}>Register now</Link> and get started!</h8></p>
         <LoginModal show={loginShow} onHide={() => setLoginShow(false)} />
-
+        <SignupModal show={SignupShow} onHide={() => setSignupShow(false)} />
+        
         </>
       )}
     </Box>
