@@ -5,6 +5,7 @@ import Footer from './components/Footer';
 import Home from './Pages/Home';
 import CustomNavbar from './components/Navbar';
 import Profile from './Pages/Profile';
+import Restaurants from './Pages/Restaurants';
 
 const App = () => {
   return (
@@ -14,8 +15,10 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/Profile" element={<Profile />}/>
+          <Route path="/Restaurants" element={<Restaurants />}/>
+          
         </Routes>
-        <Footer style={{ marginTop: 'auto' }}/>
+        {/* <Footer style={{ marginTop: 'auto' }}/> */}
       </Box>
     </Router>
   );

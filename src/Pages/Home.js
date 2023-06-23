@@ -5,6 +5,7 @@ import IndividualIntervalsExample from "../components/Carousel";
 import SignupModal from "../components/Modal";
 import MapWithSearchBar from "../components/MapWithSearchBar";
 import ImageComponent from "../components/Imagecomponent";
+import { Button } from "react-bootstrap";
 function Home() {
   const [modalShow, setModalShow] = React.useState(false);
   return (
@@ -200,6 +201,7 @@ function Home() {
           </div>
         </div>
         <MapWithSearchBar />
+        <Button  variant="outline-success" style={{fontSize:"23px", marginLeft:"auto", marginRight: "10px", boxShadow: "0px 3px 5px rgba(0, 0, 0, 0.5)" }} onClick={() => (window.location.href = '/Restaurants')}> Restaurants</Button>{' '}
       </div>
     </Box>
   );

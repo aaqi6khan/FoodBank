@@ -2,7 +2,7 @@ import React from 'react';
 
 function Footer() {
   return (
-    <footer className="text-center text-white" style={{ backgroundColor: "#89CFF0" }}>
+    <footer className="text-center text-white" style={{ backgroundColor: "#89CFF0", marginTop:"auto" }}>
       <div className="container py-4">
         <section>
           <a className="btn btn-link btn-floating btn-lg text-dark m-1 text-light" href="#!" role="button" data-mdb-ripple-color="dark">
